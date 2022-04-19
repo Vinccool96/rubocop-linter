@@ -33,8 +33,6 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1.101.0
-        with:
-          ruby-version: 2.6.5
       - name: Run rubocop
         uses: Vinccool96/rubocop-linter@v1
       - name: Add & Commit
