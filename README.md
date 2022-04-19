@@ -1,0 +1,2 @@
+# rubocop-linter
+Run rubocop
