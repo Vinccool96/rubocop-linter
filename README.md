@@ -2,6 +2,7 @@
 
 [![](https://img.shields.io/github/license/Vinccool96/rubocop-linter)](./LICENSE)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/Vinccool96/rubocop-linter?logo=github&sort=semver)](https://github.com/Vinccool96/rubocop-linter/releases)
+[![action-bumpr supported](https://img.shields.io/badge/bumpr-supported-ff69b4?logo=github&link=https://github.com/haya14busa/action-bumpr)](https://github.com/haya14busa/action-bumpr)
 
 This action runs [rubocop](https://github.com/rubocop/rubocop) with its
 [auto-correct](https://docs.rubocop.org/rubocop/usage/auto_correct.html) mode.
