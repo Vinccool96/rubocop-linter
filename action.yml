@@ -1,4 +1,4 @@
-name: 'Run rubocop with reviewdog'
+name: 'Run rubocop autofix'
 description: 'Run rubocop to improve code review experience.'
 author: 'vinccool96'
 inputs:
