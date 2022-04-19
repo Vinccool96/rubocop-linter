@@ -1,4 +1,4 @@
-name: 'Run rubocop autofix'
+name: 'Run rubocop-linter'
 description: 'Run rubocop to improve code review experience.'
 author: 'vinccool96'
 inputs:
@@ -9,13 +9,13 @@ inputs:
     description: 'Rubocop version'
   rubocop_extensions:
     description: 'Rubocop extensions'
-    default: 'rubocop-rails rubocop-performance rubocop-rspec rubocop-i18n rubocop-rake'
+    default: ''
   rubocop_flags:
     description: 'Rubocop flags. (rubocop <rubocop_flags>)'
     default: ''
   fail_level:
-    description: 'The fail level of Rubocop. Default "warning"'
-    default: 'warning'
+    description: 'The fail level of Rubocop. Default "error"'
+    default: 'error'
   fail_on_error:
     description: |
       Exit code for rubocop when errors are found [true,false]
