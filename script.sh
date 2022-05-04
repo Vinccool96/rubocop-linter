@@ -1,9 +1,4 @@
 #!/bin/sh -e
-version() {
-  if [ -n "$1" ]; then
-    echo "-v $1"
-  fi
-}
 
 cd "${GITHUB_WORKSPACE}/${INPUT_WORKDIR}" || exit
 export RUBOCOP_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
@@ -89,7 +84,7 @@ fi
 echo '::group:: Running rubocop...'
 # shellcheck disable=SC2086
 rubocop_rc=0
-${BUNDLE_EXEC}rubocop --auto-correct --fail-level ${INPUT_FAIL_LEVEL} ${INPUT_RUBOCOP_FLAGS} --require ${GITHUB_ACTION_PATH}/rdjson_formatter/rdjson_formatter.rb --format RdjsonFormatter || rubocop_rc=$?
+${BUNDLE_EXEC}rubocop --auto-correct --fail-level ${INPUT_FAIL_LEVEL} ${INPUT_RUBOCOP_FLAGS} || rubocop_rc=$?
 if [ "${INPUT_FAIL_ON_ERROR}" = "false" ]; then
   rubocop_rc=0
 fi
