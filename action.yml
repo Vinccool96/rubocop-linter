@@ -50,6 +50,7 @@ runs:
         INPUT_WORKDIR: ${{ inputs.workdir }}
         INPUT_SKIP_INSTALL: ${{ inputs.skip_install }}
         INPUT_USE_BUNDLER: ${{ inputs.use_bundler }}
+        INPUT_ALL_FILES: ${{ inputs.all_files }}
 branding:
   icon: 'check-circle'
   color: 'red'
