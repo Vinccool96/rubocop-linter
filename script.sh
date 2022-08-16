@@ -82,7 +82,7 @@ else
 fi
 
 FILES_TO_LINT=$(git diff HEAD^ HEAD --name-only)
-if [ "${INPUT_USE_BUNDLER}" = "false" ]; then
+if [ "${INPUT_ALL_FILES}" = "false" ]; then
   FILES_TO_LINT=""
 fi
 
