@@ -14,7 +14,6 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   ignorePatterns: ['lib/*'],
   rules: {
-    'prettier/prettier': 'warn',
     'no-cond-assign': [2, 'except-parens'],
     'no-unused-vars': 0,
     'no-redeclare': 0,
