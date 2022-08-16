@@ -5,7 +5,7 @@ module.exports = {
     node: true,
   },
   root: true,
-  extends: ["eslint:recommended", "prettier"],
+  extends: ["eslint:recommended", "plugin:vue/recommended", "prettier"],
   globals: {},
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -32,14 +32,12 @@ module.exports = {
       },
     ],
     "spaced-comment": "warn",
-    curly: ["error", "all"],
     quotes: [
       "error",
       "double",
       { avoidEscape: true, allowTemplateLiterals: false },
     ],
     "quote-props": ["error", "as-needed"],
-    "brace-style": ["error", "stroustrup"],
     "comma-dangle": ["error", "always-multiline"],
   },
 }
