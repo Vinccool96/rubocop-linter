@@ -2,7 +2,7 @@ module.exports = {
   env: {
     commonjs: true,
     es6: true,
-    node: true
+    node: true,
   },
   root: true,
   extends: ["eslint:recommended", "prettier"],
@@ -10,7 +10,7 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 6,
-    sourceType: "module"
+    sourceType: "module",
   },
   plugins: ["@typescript-eslint"],
   ignorePatterns: ["lib/*"],
@@ -22,22 +22,24 @@ module.exports = {
     "no-empty": [
       "error",
       {
-        allowEmptyCatch: true
-      }
+        allowEmptyCatch: true,
+      },
     ],
     "prefer-const": [
       "warn",
       {
-        destructuring: "all"
-      }
+        destructuring: "all",
+      },
     ],
     "spaced-comment": "warn",
-    curly: "error",
+    curly: ["error", "all"],
     quotes: [
       "error",
       "double",
-      { avoidEscape: true, allowTemplateLiterals: false }
+      { avoidEscape: true, allowTemplateLiterals: false },
     ],
-    "quote-props": ["error", "as-needed"]
-  }
+    "quote-props": ["error", "as-needed"],
+    "brace-style": ["error", "stroustrup"],
+    "comma-dangle": ["error", "always-multiline"],
+  },
 }
