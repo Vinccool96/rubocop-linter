@@ -105,3 +105,7 @@ Optional. Do not install Rubocop or its extensions. Default: `false`.
 ### `use_bundler`
 
 Optional. Run Rubocop with bundle exec. Default: `false`.
+
+### `all_files`
+
+Optional. Run Rubocop on all files. Default: `false`. Setting the value to `true` greatly slows down Rubocop.

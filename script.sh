@@ -81,10 +81,15 @@ else
   BUNDLE_EXEC="bundle exec "
 fi
 
+FILES_TO_LINT=$(git diff HEAD^ HEAD --name-only)
+if [ "${INPUT_USE_BUNDLER}" = "false" ]; then
+  FILES_TO_LINT=""
+fi
+
 echo '::group:: Running rubocop...'
 # shellcheck disable=SC2086
 rubocop_rc=0
-${BUNDLE_EXEC}rubocop --autocorrect --fail-level ${INPUT_FAIL_LEVEL} ${INPUT_RUBOCOP_FLAGS} || rubocop_rc=$?
+${BUNDLE_EXEC}rubocop --autocorrect --fail-level ${INPUT_FAIL_LEVEL} ${INPUT_RUBOCOP_FLAGS} ${FILES_TO_LINT} || rubocop_rc=$?
 if [ "${INPUT_FAIL_ON_ERROR}" = "false" ]; then
   rubocop_rc=0
 fi

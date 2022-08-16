@@ -30,6 +30,9 @@ inputs:
   use_bundler:
     description: "Run Rubocop with bundle exec. Default: `false`"
     default: 'false'
+  all_files:
+    description: "Run Rubocop on all files. Default: `false`"
+    default: 'false'
 runs:
   using: 'composite'
   steps:
