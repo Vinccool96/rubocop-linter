@@ -1,7 +1,7 @@
 import * as core from "@actions/core"
 
 interface InputTypes {
-  rubocop_version: string | undefined
+  rubocop_version: string
   rubocop_extensions: string | undefined
   rubocop_flags: string | undefined
   fail_level: "info" | "refactor" | "convention" | "warning" | "error" | "fatal"
