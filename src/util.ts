@@ -1,8 +1,27 @@
-import * as core from "@actions/core"
 import fs from "fs"
+import { exec } from "child_process"
+
+import * as core from "@actions/core"
 import { parse } from "yaml";
+
 import { RubocopConfigYaml } from "./types";
 
+export function promisifyExec(command: string): Promise<any> {
+  return new Promise((resolve, reject) => exec(command, (error, stdout, _stderr) => {
+    if (error) {
+      if (error.code === 1) {
+        // leaks present
+        reject(stdout)
+      } else {
+        // gitleaks error
+        reject(error);
+      }
+    } else {
+      // no leaks
+      resolve(stdout);
+    }
+  }))
+}
 
 export function getRubocopVersionFromGemfile(filePath: string): string {
   let version = ""
@@ -82,4 +101,12 @@ function excludedPatternToRegexString(pattern: string): string {
     }
   }
   return finalPattern
+}
+
+export function filesToString(files: string[]): string {
+  let filesStr = ""
+  for (const file of files) {
+    filesStr += `"${file}" `
+  }
+  return filesStr.trim()
 }
