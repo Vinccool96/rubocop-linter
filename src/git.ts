@@ -3,7 +3,7 @@ import { Diff, Repository } from "nodegit"
 export async function getDiffFiles(baseDir: string, branch: string): Promise<string[]> {
   const files: Set<string> = new Set()
   const repo = await Repository.open(baseDir)
-    .then((repo) => repo)
+    .then((rep) => rep)
   const commit = await repo.getBranchCommit(branch)
     .then((c) => c)
   const diffs = await commit.getDiff()
