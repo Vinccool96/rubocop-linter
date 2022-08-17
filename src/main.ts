@@ -5,7 +5,7 @@ import path from "path"
 import simpleGit, { Response } from "simple-git"
 
 import { getInput } from "./io"
-import { getRubocopVersionFromGemfile } from "./util"
+import { getRubocopVersionFromGemfile, getVersionFromGemfile } from "./util"
 
 const baseDir = path.join(process.cwd(), getInput("workdir") || "")
 const git = simpleGit({ baseDir })
@@ -30,5 +30,18 @@ function processInstall() {
     rubocopVersion = getInput("rubocop_version")
   }
   exec(`gem install -N rubocop --version "${rubocopVersion}"`)
+
+  const extensions = getInput("rubocop_extensions") || []
+  for (const extension of extensions) {
+    const split = extension.split(":")
+    const extensionName = split[0]
+    const inputExtensionVersion = split[1]
+    let extensionVersion = ""
+    if (inputExtensionVersion === "gemfile") {
+      extensionVersion = getVersionFromGemfile(baseDir, extensionName)
+    }
+    const extensionFlag = extensionVersion ? `--version ${extensionVersion}` : ""
+    exec(`gem install -N "${extensionName}" ${extensionFlag}`)
+  }
   core.endGroup()
 }

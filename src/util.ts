@@ -18,3 +18,21 @@ export function getRubocopVersionFromGemfile(filePath: string): string {
   }
   return version
 }
+
+export function getVersionFromGemfile(filePath: string, gem: string): string {
+  let version = ""
+  if (fs.existsSync(`${filePath}/Gemfile.lock`)) {
+    fs.readFile(`${filePath}/Gemfile.lock`, "utf8", function (_err, data) {
+      const matches = new RegExp(`(?<=^\s{4}${gem}\s\().*(?=\))`, "g")[Symbol.match](data)
+      const gemfile_version = matches ? matches[0] : ""
+      if (gemfile_version) {
+        version = gemfile_version
+      } else {
+        core.info("Cannot get the rubocop extension version from Gemfile.lock. The latest version will be installed.")
+      }
+    })
+  } else {
+    core.info("Gemfile.lock not found. The latest version will be installed.")
+  }
+  return version
+}
