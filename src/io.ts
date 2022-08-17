@@ -19,17 +19,6 @@ export function getInput<T extends input>(
   return core.getInput(name)
 }
 
-function setInput(input: input, value: string | undefined) {
-  if (value) {
-    return (process.env[`INPUT_${input.toUpperCase()}`] = value)
-  } else {
-    return delete process.env[`INPUT_${input.toUpperCase()}`]
-  }
-}
-
-function setDefault(input: input, value: string) {
-  if (!getInput(input)) {
-    setInput(input, value)
-  }
-  return getInput(input)
+export function debug(elem: any, name: string | null = null) {
+  core.debug((name ? `${name}: ` : "") + JSON.stringify(elem, null, 2))
 }

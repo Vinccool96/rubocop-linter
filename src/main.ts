@@ -5,7 +5,7 @@ import * as core from "@actions/core"
 
 import simpleGit from "simple-git"
 
-import { getInput } from "./io"
+import { debug, getInput } from "./io"
 import {
   filesToString,
   filterFiles,
@@ -16,24 +16,27 @@ import {
 } from "./util"
 
 const baseDir = path.join(process.cwd(), getInput("workdir") || "")
+debug(baseDir)
 const git = simpleGit({ baseDir })
 
 core.info(`Running in ${baseDir}`)
 
 export async function execute() {
   const branchesInfo = await git.branch()
-  core.debug(JSON.stringify(branchesInfo, null, 2))
+  debug(branchesInfo)
   const currentBranch = branchesInfo.branches[branchesInfo.current]
   const currentCommit = currentBranch.commit
   const diff = await git.diff([`${currentCommit}`, currentCommit, "--name-only"])
+  debug(diff)
   const files = prefilterFiles(diff.split("\n").filter((file) => file), baseDir)
+  debug(files)
   if (files.length) {
     await exec(`cd ${baseDir}`)
     if (!getInput("skip_install", true)) {
       processInstall()
     }
 
-  const bundleExec = getInput("use_bundler", true) ? "bundle exec " : ""
+    const bundleExec = getInput("use_bundler", true) ? "bundle exec " : ""
     const filesString = !getInput("all_files", true) ? "" : filesToString(filterFiles(files, baseDir))
 
     core.startGroup("Running rubocop...")
