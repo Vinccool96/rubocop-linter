@@ -59,6 +59,10 @@ export function getVersionFromGemfile(filePath: string, gem: string): string {
   return version
 }
 
+export function prefilterFiles(files: string[], baseDir: string): string[] {
+  return baseDir !== "." ? files.filter((file) => new RegExp(`^${baseDir}/`, "g").test(file)) : files
+}
+
 export function filterFiles(files: string[], baseDir: string): string[] {
   let filteredFiles = files
   if (baseDir !== ".") {

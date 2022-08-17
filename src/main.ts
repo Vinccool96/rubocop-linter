@@ -6,7 +6,14 @@ import * as core from "@actions/core"
 import simpleGit from "simple-git"
 
 import { getInput } from "./io"
-import { filesToString, filterFiles, getRubocopVersionFromGemfile, getVersionFromGemfile, promisifyExec } from "./util"
+import {
+  filesToString,
+  filterFiles,
+  getRubocopVersionFromGemfile,
+  getVersionFromGemfile,
+  prefilterFiles,
+  promisifyExec,
+} from "./util"
 
 const baseDir = path.join(process.cwd(), getInput("workdir") || "")
 const git = simpleGit({ baseDir })
@@ -14,23 +21,27 @@ const git = simpleGit({ baseDir })
 core.info(`Running in ${baseDir}`)
 
 export async function execute() {
-  await exec(`cd ${baseDir}`)
-  if (!getInput("skip_install", true)) {
-    processInstall()
-  }
+  const diff = await git.diff(["HEAD^", "HEAD", "--name-only"])
+  const files = prefilterFiles(diff.split("\n").filter((file) => file), baseDir)
+  if (files.length) {
+    await exec(`cd ${baseDir}`)
+    if (!getInput("skip_install", true)) {
+      processInstall()
+    }
 
   const bundleExec = getInput("use_bundler", true) ? "bundle exec " : ""
-  const diff = await git.diff(["HEAD^", "HEAD", "--name-only"])
-  const files = diff.split("\n").filter((file) => file)
-  const filesString = !getInput("all_files", true) ? "" : filesToString(filterFiles(files, baseDir))
+    const filesString = !getInput("all_files", true) ? "" : filesToString(filterFiles(files, baseDir))
 
-  core.startGroup("Running rubocop...")
-  const fails = await promisifyExec(`${bundleExec}rubocop --autocorrect --fail-level ${getInput("fail_level")} ${getInput("rubocop_flags")} ${filesString}`)
-    .then(() => true)
-    .catch(() => getInput("fail_on_error", true))
-  core.endGroup()
-  if (fails) {
-    core.setFailed("Rubocop is set to fail on error")
+    core.startGroup("Running rubocop...")
+    const fails = await promisifyExec(`${bundleExec}rubocop --autocorrect --fail-level ${getInput("fail_level")} ${getInput("rubocop_flags")} ${filesString}`)
+      .then(() => true)
+      .catch(() => getInput("fail_on_error", true))
+    core.endGroup()
+    if (fails) {
+      core.setFailed("Rubocop is set to fail on error")
+    }
+  } else {
+    core.info("No file in the working directory has been modified. No need to run Rubocop.")
   }
 }
 
