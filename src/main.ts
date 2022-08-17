@@ -31,7 +31,7 @@ function processInstall() {
   }
   exec(`gem install -N rubocop --version "${rubocopVersion}"`)
 
-  const extensions = getInput("rubocop_extensions") || []
+  const extensions = getInput("rubocop_extensions").split(" ").filter((s) => s)
   for (const extension of extensions) {
     const split = extension.split(":")
     const extensionName = split[0]
