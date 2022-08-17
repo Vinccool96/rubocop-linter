@@ -26,6 +26,7 @@ export async function execute() {
   debug(branchesInfo)
   const currentBranch = branchesInfo.branches[branchesInfo.current]
   const currentCommit = currentBranch.commit
+  debug(await exec(`git diff ${currentCommit}~ ${currentCommit} --name-only`), `git diff ${currentCommit}~ ${currentCommit} --name-only`)
   const diff = await git.diff([`${currentCommit}`, currentCommit, "--name-only"])
   debug(diff)
   const files = prefilterFiles(diff.split("\n").filter((file) => file), baseDir)
