@@ -25,14 +25,10 @@ core.info(`Running in ${baseDir}`)
 export async function execute() {
   const branchesInfo = await git.branch()
   debug(branchesInfo)
-  const currentBranch = branchesInfo.branches[branchesInfo.current]
-  const currentCommit = currentBranch.commit
-  await getDiffFiles(baseDir, branchesInfo.current)
-  debug(`git diff ${currentCommit}~ ${currentCommit} --name-only`, "command")
-  const diff = await promisifyExec(`git diff ${currentCommit}~ ${currentCommit} --name-only`)
-    .then((re) => re)
-  debug(diff)
-  const files = prefilterFiles(diff.split("\n").filter((file) => file), baseDir)
+  const unfilteredFiles = await getDiffFiles(baseDir, branchesInfo.current)
+    .then((unfiltered) => unfiltered)
+  debug(unfilteredFiles)
+  const files = prefilterFiles(unfilteredFiles, baseDir)
   debug(files)
   if (files.length) {
     await exec(`cd ${baseDir}`)
