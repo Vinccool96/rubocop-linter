@@ -1,6 +1,7 @@
 name: 'Run rubocop-linter'
 description: 'Run rubocop to improve code review experience.'
 author: 'vinccool96'
+
 inputs:
   github_token:
     description: 'GITHUB_TOKEN'
@@ -43,24 +44,11 @@ inputs:
     description: "Run Rubocop on all files. Default: `false`"
     required: false
     default: 'false'
+
 runs:
-  using: 'composite'
-  steps:
-    - run: $GITHUB_ACTION_PATH/script.sh
-      shell: sh
-      env:
-        # INPUT_<VARIABLE_NAME> is not available in Composite run steps
-        # https://github.community/t/input-variable-name-is-not-available-in-composite-run-steps/127611
-        INPUT_GITHUB_TOKEN: ${{ inputs.github_token }}
-        INPUT_RUBOCOP_VERSION: ${{ inputs.rubocop_version }}
-        INPUT_RUBOCOP_EXTENSIONS: ${{ inputs.rubocop_extensions }}
-        INPUT_RUBOCOP_FLAGS: ${{ inputs.rubocop_flags }}
-        INPUT_FAIL_LEVEL: ${{ inputs.fail_level }}
-        INPUT_FAIL_ON_ERROR: ${{ inputs.fail_on_error }}
-        INPUT_WORKDIR: ${{ inputs.workdir }}
-        INPUT_SKIP_INSTALL: ${{ inputs.skip_install }}
-        INPUT_USE_BUNDLER: ${{ inputs.use_bundler }}
-        INPUT_ALL_FILES: ${{ inputs.all_files }}
+  using: node16
+  main: lib/index.js
+
 branding:
   icon: 'check-circle'
   color: 'red'
