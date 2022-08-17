@@ -21,8 +21,11 @@ const git = simpleGit({ baseDir })
 core.info(`Running in ${baseDir}`)
 
 export async function execute() {
-  core.info(JSON.stringify(await git.branch(), null, 2))
-  const diff = await git.diff(["HEAD^", "HEAD", "--name-only"])
+  const branchesInfo = await git.branch()
+  core.debug(JSON.stringify(branchesInfo, null, 2))
+  const currentBranch = branchesInfo.branches[branchesInfo.current]
+  const currentCommit = currentBranch.commit
+  const diff = await git.diff([`${currentCommit}`, currentCommit, "--name-only"])
   const files = prefilterFiles(diff.split("\n").filter((file) => file), baseDir)
   if (files.length) {
     await exec(`cd ${baseDir}`)
