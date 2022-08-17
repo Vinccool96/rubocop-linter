@@ -14,6 +14,7 @@ import {
   prefilterFiles,
   promisifyExec,
 } from "./util"
+import { getDiffFiles } from "./git"
 
 const baseDir = path.join(process.cwd(), getInput("workdir") || "")
 debug(baseDir)
@@ -26,6 +27,7 @@ export async function execute() {
   debug(branchesInfo)
   const currentBranch = branchesInfo.branches[branchesInfo.current]
   const currentCommit = currentBranch.commit
+  await getDiffFiles(baseDir, branchesInfo.current)
   debug(`git diff ${currentCommit}~ ${currentCommit} --name-only`, "command")
   const diff = await promisifyExec(`git diff ${currentCommit}~ ${currentCommit} --name-only`)
     .then((re) => re)
