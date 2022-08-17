@@ -1,5 +1,8 @@
 import * as core from "@actions/core"
 import fs from "fs"
+import { parse } from "yaml";
+import { RubocopConfigYaml } from "./types";
+
 
 export function getRubocopVersionFromGemfile(filePath: string): string {
   let version = ""
@@ -35,4 +38,48 @@ export function getVersionFromGemfile(filePath: string, gem: string): string {
     core.info("Gemfile.lock not found. The latest version will be installed.")
   }
   return version
+}
+
+export function filterFiles(files: string[], baseDir: string): string[] {
+  let filteredFiles = files
+  if (baseDir !== ".") {
+    filteredFiles = filteredFiles.filter((file) => new RegExp(`^${baseDir}/`, "g").test(file))
+  }
+
+  if (fs.existsSync(`${baseDir}/.rubocop.yml`)) {
+    const rubocopConfigFile = fs.readFileSync(`${baseDir}/.rubocop.yml`, "utf8")
+    const config: RubocopConfigYaml = parse(rubocopConfigFile)
+    const excluded = config.AllCops?.Exclude
+    if (excluded) {
+      const regexes = excludedRegexes(baseDir, excluded)
+      return filteredFiles.filter((file) => regexes.some((regex) => regex.test(file)))
+    }
+  }
+  return filteredFiles
+}
+
+function excludedRegexes(baseDir: string, patterns: string[]): RegExp[] {
+  const base = baseDir === "." ? "" : `${baseDir}`
+  return patterns.map((pattern) => new RegExp(`^${base}/${excludedPatternToRegexString(pattern)}$`))
+}
+
+function excludedPatternToRegexString(pattern: string): string {
+  const realPattern = pattern.replace(".", "\\.")
+  if (!realPattern.includes("*")) {
+    return realPattern
+  }
+  const splitPattern = realPattern.split("/")
+  let finalPattern = splitPattern[0]
+  for (let i = 1; i < splitPattern.length; i++) {
+    const patternPart = splitPattern[i]
+    finalPattern += "/"
+    if (patternPart === "**") {
+      finalPattern += "(.+)/*"
+    } else if (patternPart.includes("*")) {
+      finalPattern += patternPart.replace("*", ".+")
+    } else {
+      finalPattern += patternPart
+    }
+  }
+  return finalPattern
 }

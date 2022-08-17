@@ -1,20 +1,6 @@
 import * as core from "@actions/core"
 
-interface InputTypes {
-  rubocop_version: string
-  rubocop_extensions: string
-  rubocop_flags: string | undefined
-  fail_level: "info" | "refactor" | "convention" | "warning" | "error" | "fatal"
-  fail_on_error: "false" | "true"
-  workdir: string
-  skip_install: "false" | "true"
-  use_bundler: "false" | "true"
-  all_files: "false" | "true"
-
-  github_token: string | undefined
-}
-
-export type input = keyof InputTypes
+import { input, InputTypes } from "./types"
 
 export function getInput<T extends input>(name: T, parseAsBool: true): boolean
 export function getInput<T extends input>(
