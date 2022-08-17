@@ -17,6 +17,7 @@ export async function execute() {
     processInstall()
   }
 
+  const bundleExec = getInput("use_bundler", true) ? "bundle exec " : ""
   const diff = await git.diff(["HEAD^", "HEAD", "--name-only"])
   const files = diff.split("\n").filter((file) => file)
 }
