@@ -1,10 +1,10 @@
-import { Diff, Repository } from "nodegit"
+import nodegit from "nodegit"
 
 import { debug } from "./io"
 
 export async function getDiffFiles(baseDir: string, branch: string): Promise<string[]> {
   const files: Set<string> = new Set()
-  const repo = await Repository.open(baseDir)
+  const repo = await nodegit.Repository.open(baseDir)
     .then((rep) => rep)
   debug(repo, "repo")
   const commit = await repo.getBranchCommit(branch)
@@ -20,7 +20,7 @@ export async function getDiffFiles(baseDir: string, branch: string): Promise<str
     for (let i = 0; i < diff.numDeltas(); i++) {
       const delta = diff.getDelta(i)
       debug(diffs, "diffs")
-      if ([Diff.DELTA.ADDED, Diff.DELTA.MODIFIED, Diff.DELTA.RENAMED].includes(delta.status())){
+      if ([nodegit.Diff.DELTA.ADDED, nodegit.Diff.DELTA.MODIFIED, nodegit.Diff.DELTA.RENAMED].includes(delta.status())){
         files.add(`${baseDir}/${delta.newFile().path()}`)
       }
     }
