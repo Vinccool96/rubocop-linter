@@ -31,6 +31,7 @@
   "homepage": "https://github.com/EndBug/add-and-commit#readme",
   "dependencies": {
     "@actions/core": "^1.9.1",
+    "@actions/exec": "^1.1.1",
     "actions-toolkit": "github:EndBug/actions-toolkit#core-actions",
     "octokit": "^2.0.7",
     "simple-git": "^3.7.1",

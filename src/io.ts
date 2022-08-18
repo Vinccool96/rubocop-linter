@@ -1,4 +1,5 @@
 import * as core from "@actions/core"
+import { ExecOptions } from "@actions/exec"
 
 import { input, InputTypes, gitEnv, GitEnvTypes } from "./types"
 
@@ -26,4 +27,15 @@ export function getGitEnv<T extends gitEnv>(name: T): GitEnvTypes[T] {
 
 export function debug(elem: any, name: string | null = null) {
   core.debug((name ? `${name}: ` : "") + JSON.stringify(elem, null, 2))
+}
+
+export const execOptions: ExecOptions = {
+  listeners: {
+    stdout(data: Buffer) {
+      core.info(data.toString())
+    },
+    stderr(data: Buffer) {
+      core.error(data.toString())
+    },
+  },
 }

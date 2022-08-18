@@ -1,18 +1,17 @@
 import path from "path"
-import { exec } from "child_process"
+import { exec } from "@actions/exec"
 
 import * as core from "@actions/core"
 
 import simpleGit from "simple-git"
 
-import { debug, getInput } from "./io"
+import { debug, execOptions, getInput } from "./io"
 import {
   filesToString,
   filterFiles,
   getRubocopVersionFromGemfile,
   getVersionFromGemfile,
   prefilterFiles,
-  promisifyExec,
 } from "./util"
 import { getDiffFiles } from "./git"
 
@@ -36,7 +35,7 @@ export async function execute() {
 
 async function processAllFiles() {
   if (!getInput("skip_install", true)) {
-    processInstall()
+    await processInstall()
   }
 
   await runRubocop()
@@ -56,7 +55,7 @@ async function processChangedFiles() {
 
   if (files.length) {
     if (!getInput("skip_install", true)) {
-      processInstall()
+      await processInstall()
     }
 
     const filesString = filesToString(filteredFiles)
@@ -67,18 +66,16 @@ async function processChangedFiles() {
 }
 
 async function runRubocop(files = "") {
-  const bundleExec = getInput("use_bundler", true) ? "bundle exec " : ""
   core.startGroup("Running rubocop...")
-  const fails = await promisifyExec(`${bundleExec}rubocop --autocorrect --fail-level ${getInput("fail_level")} ${getInput("rubocop_flags")} ${files}`)
-    .then(() => true)
-    .catch(() => getInput("fail_on_error", true))
+  const bundleExec = getInput("use_bundler", true) ? "bundle exec " : ""
+  const fails = await exec(`${bundleExec}rubocop --autocorrect --fail-level ${getInput("fail_level")} ${getInput("rubocop_flags")} ${files}`, undefined, execOptions)
   core.endGroup()
   if (fails) {
     core.setFailed("Rubocop is set to fail on error")
   }
 }
 
-function processInstall() {
+async function processInstall() {
   core.startGroup("Installing rubocop with extensions ... https://github.com/rubocop/rubocop")
   let rubocopVersion: string
   if (getInput("rubocop_version") === "gemfile") {
@@ -86,7 +83,7 @@ function processInstall() {
   } else {
     rubocopVersion = getInput("rubocop_version")
   }
-  exec(`gem install -N rubocop --version "${rubocopVersion}"`)
+  await exec(`gem install -N rubocop --version "${rubocopVersion}"`, undefined, execOptions)
 
   const extensions = getInput("rubocop_extensions").split(" ").filter((s) => s)
   for (const extension of extensions) {
@@ -98,7 +95,7 @@ function processInstall() {
       extensionVersion = getVersionFromGemfile(baseDir, extensionName)
     }
     const extensionFlag = extensionVersion ? `--version ${extensionVersion}` : ""
-    exec(`gem install -N "${extensionName}" ${extensionFlag}`)
+    await exec(`gem install -N "${extensionName}" ${extensionFlag}`, undefined, execOptions)
   }
   core.endGroup()
 }
