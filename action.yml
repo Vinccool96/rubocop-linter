@@ -3,6 +3,13 @@ description: 'Run rubocop to improve code review experience.'
 author: 'vinccool96'
 
 inputs:
+  owner:
+    description: 'The owner of the repo'
+    required: false
+  repo:
+    description: 'The repo'
+    required: false
+    default: ${{ github.token }}
   github_token:
     description: 'GITHUB_TOKEN'
     required: false

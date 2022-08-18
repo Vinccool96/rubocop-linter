@@ -23,32 +23,57 @@ const git = simpleGit({ baseDir })
 core.info(`Running in ${baseDir}`)
 
 export async function execute() {
+  process.chdir(baseDir)
+
+  if (getInput("all_files", true)) {
+    core.info("Running rubocop for all files")
+    await processAllFiles()
+  } else {
+    core.info("Running rubocop for changed files")
+    await processChangedFiles()
+  }
+}
+
+async function processAllFiles() {
+  if (!getInput("skip_install", true)) {
+    processInstall()
+  }
+
+  await runRubocop()
+}
+
+async function processChangedFiles() {
   const branchesInfo = await git.branch()
-  debug(branchesInfo)
+  debug(branchesInfo, "branchesInfo")
   const unfilteredFiles = await getDiffFiles(baseDir, branchesInfo.current)
     .then((unfiltered) => unfiltered)
-  debug(unfilteredFiles)
+  debug(unfilteredFiles, "unfilteredFiles")
   const files = prefilterFiles(unfilteredFiles, baseDir)
-  debug(files)
+  debug(files, "files")
+  const filteredFiles = filterFiles(files, baseDir)
+  debug(filteredFiles, "filteredFiles")
+
   if (files.length) {
-    await exec(`cd ${baseDir}`)
     if (!getInput("skip_install", true)) {
       processInstall()
     }
 
-    const bundleExec = getInput("use_bundler", true) ? "bundle exec " : ""
-    const filesString = !getInput("all_files", true) ? "" : filesToString(filterFiles(files, baseDir))
-
-    core.startGroup("Running rubocop...")
-    const fails = await promisifyExec(`${bundleExec}rubocop --autocorrect --fail-level ${getInput("fail_level")} ${getInput("rubocop_flags")} ${filesString}`)
-      .then(() => true)
-      .catch(() => getInput("fail_on_error", true))
-    core.endGroup()
-    if (fails) {
-      core.setFailed("Rubocop is set to fail on error")
-    }
+    const filesString = filesToString(filteredFiles)
+    await runRubocop(filesString)
   } else {
     core.info("No file in the working directory has been modified. No need to run Rubocop.")
+  }
+}
+
+async function runRubocop(files = "") {
+  const bundleExec = getInput("use_bundler", true) ? "bundle exec " : ""
+  core.startGroup("Running rubocop...")
+  const fails = await promisifyExec(`${bundleExec}rubocop --autocorrect --fail-level ${getInput("fail_level")} ${getInput("rubocop_flags")} ${files}`)
+    .then(() => true)
+    .catch(() => getInput("fail_on_error", true))
+  core.endGroup()
+  if (fails) {
+    core.setFailed("Rubocop is set to fail on error")
   }
 }
 

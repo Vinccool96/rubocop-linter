@@ -32,7 +32,7 @@
   "dependencies": {
     "@actions/core": "^1.9.1",
     "actions-toolkit": "github:EndBug/actions-toolkit#core-actions",
-    "nodegit": "^0.28.0-alpha.18",
+    "octokit": "^2.0.7",
     "simple-git": "^3.7.1",
     "string-argv": "^0.3.1",
     "yaml": "^2.1.1"
@@ -40,7 +40,6 @@
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",
     "@types/node": "^16.11.7",
-    "@types/nodegit": "^0.27.10",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "@vercel/ncc": "^0.34.0",
