@@ -4,12 +4,13 @@ import { debug, getInput, getGitEnv } from "./io"
 const octokit = new Octokit({ auth: getInput("github_token") })
 
 export async function getDiffFiles(branch: string, commit: string): Promise<string[]> {
+  debug(getGitEnv("repository"), "getGitEnv(\"repository\")")
   debug(getGitEnv("ref_name"), "getGitEnv(\"ref_name\")")
   debug(getGitEnv("ref_type"), "getGitEnv(\"ref_type\")")
   debug(getGitEnv("head_ref"), "getGitEnv(\"head_ref\")")
   const gitWorkspace = process.env.GITHUB_WORKSPACE!
   debug(gitWorkspace, "gitWorkspace")
-  const fullRepo = process.env.GITHUB_ACTION_REPOSITORY!.split("/")
+  const fullRepo = getGitEnv("repository").split("/")
   debug(fullRepo, "fullRepo")
   const owner = fullRepo[0]
   debug(owner, "owner")

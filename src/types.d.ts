@@ -15,6 +15,7 @@ export interface InputTypes {
 export type input = keyof InputTypes
 
 export interface GitEnvTypes {
+  repository: string
   ref_name: string
   ref_type: string
   head_ref: string | undefined
