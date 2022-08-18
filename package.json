@@ -5,7 +5,7 @@
   "description": "Lint ruby files via rubocop",
   "main": "lib/index.js",
   "scripts": {
-    "build": "ncc build src/index.ts --out lib",
+    "build": "ncc build src/index.ts --minify --out lib",
     "watch": "ncc build src/index.ts --watch --out lib",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts --fix src",
