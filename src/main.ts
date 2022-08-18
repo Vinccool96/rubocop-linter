@@ -46,7 +46,7 @@ async function processChangedFiles() {
   const branchesInfo = await git.branch()
   debug(branchesInfo, "branchesInfo")
   const currentCommit = branchesInfo.branches[branchesInfo.current].commit
-  const unfilteredFiles = await getDiffFiles(currentCommit)
+  const unfilteredFiles = await getDiffFiles(branchesInfo.current, currentCommit)
     .then((unfiltered) => unfiltered)
   debug(unfilteredFiles, "unfilteredFiles")
   const files = prefilterFiles(unfilteredFiles, baseDir)
