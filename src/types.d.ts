@@ -9,8 +9,6 @@ export interface InputTypes {
   use_bundler: "false" | "true"
   all_files: "false" | "true"
 
-  owner: string | undefined
-  repo: string | undefined
   github_token: string | undefined
 }
 

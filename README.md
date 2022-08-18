@@ -53,18 +53,6 @@ or
 the [organisation's](https://docs.github.com/en/organizations/managing-organization-settings/disabling-or-limiting-github-actions-for-your-organization#setting-the-permissions-of-the-github_token-for-your-organization)
 have the `Read and write permissions` enabled.**
 
-### `owner`
-
-Optional. The owner of the repo that runs the action. Only used to query the commit changes if `all_files` is set to `false` or not set, in which case it is required.
-
-### `repo`
-
-Optional. the repo that runs the action. Only used to query the commit changes if `all_files` is set to `false` or not set, in which case it is required.
-
-### `github_token`
-
-Optional. A GitHub token. Only used to query the commit changes if `all_files` is set to `true`. Defaults to `${{ github.token }}`
-
 ### `rubocop_version`
 
 Optional. Set rubocop version. Possible values:

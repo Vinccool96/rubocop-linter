@@ -22,11 +22,3 @@ export function getInput<T extends input>(
 export function debug(elem: any, name: string | null = null) {
   core.debug((name ? `${name}: ` : "") + JSON.stringify(elem, null, 2))
 }
-
-export function checkInputs() {
-  if (!getInput("all_files")) {
-    if (!getInput("owner")) {
-      core.error("The ")
-    }
-  }
-}
