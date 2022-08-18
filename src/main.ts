@@ -53,7 +53,7 @@ async function processChangedFiles() {
   const filteredFiles = filterFiles(files, baseDir)
   debug(filteredFiles, "filteredFiles")
 
-  if (files.length) {
+  if (filteredFiles.length) {
     if (!getInput("skip_install", true)) {
       await processInstall()
     }
