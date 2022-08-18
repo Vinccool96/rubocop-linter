@@ -83,7 +83,8 @@ async function processInstall() {
   } else {
     rubocopVersion = getInput("rubocop_version")
   }
-  await exec(`gem install -N rubocop --version "${rubocopVersion}"`, undefined, execOptions)
+  const versionFlag = rubocopVersion ? `--version "${rubocopVersion}"` : ""
+  await exec(`gem install -N rubocop ${versionFlag}`, undefined, execOptions)
 
   const extensions = getInput("rubocop_extensions").split(" ").filter((s) => s)
   for (const extension of extensions) {
