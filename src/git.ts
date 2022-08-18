@@ -16,7 +16,7 @@ export async function getDiffFiles(branch: string, commit: string): Promise<stri
   const repo = fullRepo[1]
   debug(repo, "repo")
   const files: Set<string> = new Set()
-  const branchResp = await octokit.rest.repos.getBranch({ owner, repo, branch: commit }).then((b) => b)
+  const branchResp = await octokit.rest.repos.getBranch({ owner, repo, branch }).then((b) => b)
   debug(branchResp, "branchResp")
   const commitData = (await octokit.rest.repos.getCommit({ owner, repo, ref: commit }).then((c) => c)).data
   debug(commitData, "commitData")
