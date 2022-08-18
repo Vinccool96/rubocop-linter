@@ -1,6 +1,6 @@
 import * as core from "@actions/core"
 
-import { input, InputTypes } from "./types"
+import { input, InputTypes, gitEnv, GitEnvTypes } from "./types"
 
 export function getInput<T extends input>(name: T, parseAsBool: true): boolean
 export function getInput<T extends input>(
@@ -17,6 +17,11 @@ export function getInput<T extends input>(
 
   // @ts-ignore
   return core.getInput(name)
+}
+
+export function getGitEnv<T extends gitEnv>(name: T): GitEnvTypes[T] {
+  // @ts-ignore
+  return process.env[`GITHUB_${name.toUpperCase()}`]
 }
 
 export function debug(elem: any, name: string | null = null) {

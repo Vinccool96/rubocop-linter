@@ -14,6 +14,14 @@ export interface InputTypes {
 
 export type input = keyof InputTypes
 
+export interface GitEnvTypes {
+  ref_name: string
+  ref_type: string
+  head_ref: string | undefined
+}
+
+export type gitEnv = keyof GitEnvTypes
+
 export interface AllCopsType {
   Exclude?: string[]
   [key: string]: any
