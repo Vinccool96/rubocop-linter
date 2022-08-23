@@ -42,7 +42,11 @@ export function getVersionFromGemfile(filePath: string, gem: string): string {
 }
 
 export function prefilterFiles(files: string[], baseDir: string): string[] {
-  return baseDir !== "." ? files.filter((file) => new RegExp(`^${baseDir}/`, "g").test(file)) : files
+  return onlyRubyFiles(baseDir !== "." ? files.filter((file) => new RegExp(`^${baseDir}/`, "g").test(file)) : files)
+}
+
+function onlyRubyFiles(files: string[]): string[] {
+  return files.filter((file) => /^.+\.rb$/g.test(file))
 }
 
 export function filterFiles(files: string[], baseDir: string): string[] {
