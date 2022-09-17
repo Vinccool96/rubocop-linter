@@ -3,9 +3,15 @@ module.exports = {
     commonjs: true,
     es6: true,
     node: true,
+    jest: true,
   },
   root: true,
-  extends: ["eslint:recommended", "plugin:vue/recommended", "prettier"],
+  extends: [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:vue/recommended",
+    "prettier",
+    "plugin:prettier/recommended",
+  ],
   globals: {},
   parser: "@typescript-eslint/parser",
   parserOptions: {
