@@ -41,12 +41,7 @@ export async function getDiffFiles(
   return Array.from(files)
 }
 
-async function filesCrawler(
-  owner: string,
-  repo: string,
-  ref: string,
-  path = ""
-): Promise<string[]> {
+async function filesCrawler(owner: string, repo: string, ref: string, path = ""): Promise<string[]> {
   const files: string[] = []
   const content = (
     await octokit.rest.repos
@@ -59,6 +54,8 @@ async function filesCrawler(
         files.push(
           ...(await filesCrawler(owner, repo, ref, contentElement.path))
         )
+      } else if (contentElement.type == "file") {
+        files.push(contentElement.path)
       }
     }
   }
@@ -66,14 +63,12 @@ async function filesCrawler(
 }
 
 export async function getAllFiles(commit = "737d4e2"): Promise<string[]> {
-  const files: string[] = []
-
-  const fullRepo = ["Vinccool96", "lint-test"]
+  const fullRepo = getGitEnv("repository").split("/")
   debug(fullRepo, "fullRepo")
   const owner = fullRepo[0]
   debug(owner, "owner")
   const repo = fullRepo[1]
   debug(repo, "repo")
-  const content = await filesCrawler(owner, repo, commit).then((c) => c)
-  return files
+
+  return await filesCrawler(owner, repo, commit)
 }

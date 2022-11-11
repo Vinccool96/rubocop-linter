@@ -5,6 +5,8 @@ import * as core from "@actions/core"
 
 import simpleGit from "simple-git"
 
+import { BranchSummary } from "simple-git/dist/typings/response"
+
 import { debug, execOptions, getInput } from "./io"
 import {
   filesToString,
@@ -13,7 +15,7 @@ import {
   getVersionFromGemfile,
   prefilterFiles,
 } from "./util"
-import { getDiffFiles } from "./git"
+import { getAllFiles, getDiffFiles } from "./git"
 
 const baseDir = path.join(process.cwd(), getInput("workdir") || "")
 debug(baseDir)
@@ -21,7 +23,7 @@ const git = simpleGit({ baseDir })
 
 core.info(`Running in ${baseDir}`)
 
-export async function execute() {
+export async function execute(): Promise<void> {
   process.chdir(baseDir)
 
   if (getInput("all_files", true)) {
@@ -33,21 +35,31 @@ export async function execute() {
   }
 }
 
-async function processAllFiles() {
-  if (!getInput("skip_install", true)) {
-    await processInstall()
-  }
+async function getSummary(): Promise<BranchSummary> {
+  const branchesInfo = await git.branch()
+  debug(branchesInfo, "branchesInfo")
+  return branchesInfo
+}
 
-  await runRubocop()
+async function processAllFiles() {
+  const branchesInfo = await getSummary()
+  const unfilteredFiles = await getAllFiles(branchesInfo.branches[branchesInfo.current].commit)
+  debug(unfilteredFiles, "unfilteredFiles")
+
+  await processFiles(unfilteredFiles)
 }
 
 async function processChangedFiles() {
-  const branchesInfo = await git.branch()
-  debug(branchesInfo, "branchesInfo")
+  const branchesInfo = await getSummary()
   const currentCommit = branchesInfo.branches[branchesInfo.current].commit
   const unfilteredFiles = await getDiffFiles(branchesInfo.current, currentCommit)
     .then((unfiltered) => unfiltered)
   debug(unfilteredFiles, "unfilteredFiles")
+
+  await processFiles(unfilteredFiles)
+}
+
+async function processFiles(unfilteredFiles: string[]) {
   const files = prefilterFiles(unfilteredFiles, baseDir)
   debug(files, "files")
   const filteredFiles = filterFiles(files, baseDir)
@@ -58,8 +70,21 @@ async function processChangedFiles() {
       await processInstall()
     }
 
-    const filesString = filesToString(filteredFiles)
-    await runRubocop(filesString)
+    const splitFiles: string[][] = []
+    const chunkSize = 20
+    for (let i = 0; i < filteredFiles.length; i += chunkSize) {
+      splitFiles.push(filteredFiles.slice(i, i + chunkSize))
+    }
+
+    core.info(`Since there is ${filteredFiles.length}, rubocop will run ${Math.ceil(filteredFiles.length / chunkSize)}, so that each run has ${chunkSize} files max`)
+
+    for (let i = 0; i < splitFiles.length; i++) {
+      const split = splitFiles[i];
+
+      core.info(`Run ${i + 1}/${Math.ceil(filteredFiles.length / chunkSize)}`)
+      const filesString = filesToString(split)
+      await runRubocop(filesString)
+    }
   } else {
     core.info("No file in the working directory has been modified. No need to run Rubocop.")
   }
