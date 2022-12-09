@@ -93,7 +93,7 @@ async function processFiles(unfilteredFiles: string[]) {
 async function runRubocop(files = "") {
   core.startGroup("Running rubocop...")
   const bundleExec = getInput("use_bundler", true) ? "bundle exec " : ""
-  const fails = await exec(`${bundleExec}rubocop --autocorrect --fail-level ${getInput("fail_level")} ${getInput("rubocop_flags")} ${files}`, undefined, execOptions)
+  const fails = await exec(`${bundleExec}rubocop --auto-correct --fail-level ${getInput("fail_level")} ${getInput("rubocop_flags")} ${files}`, undefined, execOptions)
   core.endGroup()
   if (fails) {
     core.setFailed("Rubocop is set to fail on error")
